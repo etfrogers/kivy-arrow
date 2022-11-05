@@ -32,7 +32,11 @@ import math
 piby180 = math.pi/180.0
 # ------------------ KVector -------------------- #
 
+
 class KVector(EventDispatcher):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
     o_x = NumericProperty(0)
     o_y = NumericProperty(0)
 #    to_x = NumericProperty(0)
