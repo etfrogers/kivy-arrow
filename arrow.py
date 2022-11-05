@@ -122,6 +122,7 @@ class Arrow(Widget, KVector):
     outline_width = NumericProperty(cm(0.01))
     distortions = ListProperty([])
     arrow_at_midpoint = BooleanProperty(False)
+    reverse_arrow = BooleanProperty(False)
 
     def __init__(self, *args, **kwargs):
         Widget.__init__(self, *args, **kwargs)
@@ -152,6 +153,7 @@ class Arrow(Widget, KVector):
             outline_width=self.update_outline_width,
             distortions=self.update_dims,
             arrow_at_midpoint=self.update_dims,
+            reverse_arrow=self.update_dims,
         )
         self.update_dims()
         self.update_shaft_width()
@@ -230,15 +232,18 @@ class Arrow(Widget, KVector):
         head_x1, head_y1 = move_point(self.to_x, self.to_y, self.angle + (180 - self.head_angle / 2.0), self.head_size)
         head_x2, head_y2 = move_point(self.to_x, self.to_y, self.angle - (180 - self.head_angle / 2.0), self.head_size)
 
+        if self.reverse_arrow:
+            head_length = math.cos((self.head_angle/2)*piby180) * self.head_size
+            head_x_tip, head_y_tip = move_point(head_x_tip, head_y_tip, self.angle+180, head_length)
+            head_x1, head_y1 = move_point(head_x1, head_y1, self.angle, head_length)
+            head_x2, head_y2 = move_point(head_x2, head_y2, self.angle, head_length)
+
         if self.arrow_at_midpoint:
             head_x_tip, head_y_tip = move_point(head_x_tip, head_y_tip,
-                                                # self.angle+180, self.distance / 2 - self.head_size)
                                                 self.angle+180, self.distance / 2)
             head_x1, head_y1 = move_point(head_x1, head_y1,
-                                          # self.angle + 180, self.distance / 2 - self.head_size)
                                           self.angle + 180, self.distance / 2)
             head_x2, head_y2 = move_point(head_x2, head_y2,
-                                          # self.angle + 180, self.distance / 2 - self.head_size)
                                           self.angle + 180, self.distance / 2)
 
         self.head.vertices = [
